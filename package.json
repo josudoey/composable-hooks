@@ -1,8 +1,9 @@
 {
   "name": "composable-hook",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "provide composable function",
   "main": "index.js",
+  "module": "esm.mjs",
   "scripts": {},
   "repository": {
     "type": "git",
