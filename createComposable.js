@@ -19,7 +19,7 @@ module.exports = function createComposable () {
   function provide (key, value) {
     // ref https://github.com/vuejs/core/blob/a0e7dc334356e9e6ffaa547d29e55b34b9b8a04d/packages/runtime-core/src/apiInject.ts#L9
     if (!currentInstanceContext) {
-      warn('provide() can only be used inside install().')
+      throw new Error('provide() can only be used inside install().')
     } else {
       const provides = currentInstanceContext.provides
       provides[key] = value
