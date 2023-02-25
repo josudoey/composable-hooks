@@ -1,2 +1,1 @@
-import createComposable from './createComposable.js'
-export { createComposable }
+export { default as createComposable } from './lib/createComposable.js'

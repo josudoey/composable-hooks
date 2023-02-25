@@ -1,1 +1,1 @@
-module.exports.createComposable = require('./createComposable.js')
+module.exports.createComposable = require('./lib/createComposable.js')
