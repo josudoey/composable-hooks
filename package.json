@@ -26,6 +26,13 @@
   "bugs": {
     "url": "https://github.com/josudoey/composable-hook/issues"
   },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "esm.mjs",
+    "lib/*.js",
+    "lib/*.ts"
+  ],
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
     "@types/jest": "^29.4.0",
