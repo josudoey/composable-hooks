@@ -6,18 +6,17 @@ export interface Installable<T, UseOptions=any[]> {
 export type Plugin<T, UseOptions=any[]> = Install<T, UseOptions> | Installable<T, UseOptions>
 
 export type UseFunction<T, UseOptions=any[]> = (plugin: Plugin<T>, ...options: UseOptions) => this
-export interface ComposableContext<T, Options=any[]> {
-  use: UseFunction<T, Options>
+export interface ComposableContext<T, UseOptions=any[]> {
+  use: UseFunction<T, UseOptions>
+  instance: T
 }
 
-export type SetupInstanceFunction<T, CreateOptions=any[], UseOptions=any[]> = (ctx: ComposableContext<T, UseOptions>, ...options: CreateOptions) => T
-
-export type CreateFunction<T, CreateOptions=any[]> = (...options: CreateOptions) => T
-export interface Composable <T, CreateOptions> {
+export type CreateContextFunction<T, UseOptions=any[]> = (instance: T) => ComposableContext<T, UseOptions>
+export interface Composable <T, UseOptions> {
+  createContext: CreateContextFunction<T, UseOptions>
   getCurrentInstance: () => T
   provide: <T>(key: string | unique symbol, value: T) => void
   inject: <T>(key: string | unique symbol) => T
-  create: CreateFunction<T, CreateOptions>
 }
 
-export declare function createComposable <T=any, CreateOptions=any[], UseOptions=any[]> (setup: SetupInstanceFunction<T, CreateOptions, UseOptions>): Composable<T, CreateOptions>
+export declare function createComposable <T=any, UseOptions=any[]> (): Composable<T, UseOptions>

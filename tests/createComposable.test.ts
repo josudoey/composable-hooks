@@ -5,87 +5,58 @@ import {
 
   type UseFunction,
   type ComposableContext,
-  type SetupInstanceFunction,
 
-  type CreateFunction,
+  type CreateContextFunction,
   type Composable,
 
   createComposable
 } from '../'
 
 describe('createComposable', () => {
-  let setupInstance: SetupInstanceFunction<any>
+  let fixtureInstance: any
   let composable: Composable<symbol, any[]>
+  let createContext: CreateContextFunction<any, any[]>
 
   beforeEach(() => {
-    composable = createComposable(setupInstance)
+    composable = createComposable()
+    createContext = composable.createContext
   })
 
-  describe('create', () => {
-    let create: CreateFunction<any>
-    let createOptions: any[]
-    let instance: any
+  describe('createContext', () => {
+    let context: ComposableContext<symbol>
 
     beforeEach(() => {
-      create = composable.create
-      instance = create(...createOptions)
+      context = createContext(fixtureInstance)
     })
 
     describe('happy path', () => {
-      let fixtureArg1: symbol
-      let fixtureArg2: symbol
-      let fixtureArg3: symbol
-      let setupInstanceMock: jest.Mock
-
-      let fixtureResult: symbol
-
       beforeAll(() => {
-        fixtureArg1 = Symbol('arg1')
-        fixtureArg2 = Symbol('arg2')
-        fixtureArg3 = Symbol('arg3')
-        fixtureResult = Symbol('result')
-        setupInstance = setupInstanceMock = jest.fn((ctx, ...options) => {
-          return fixtureResult
-        })
-
-        createOptions = [fixtureArg1, fixtureArg2, fixtureArg3]
+        fixtureInstance = Symbol('instance')
       })
 
-      test('argv matched', () => {
-        expect(setupInstanceMock.mock.calls[0][1]).toStrictEqual(fixtureArg1)
-        expect(setupInstanceMock.mock.calls[0][2]).toStrictEqual(fixtureArg2)
-        expect(setupInstanceMock.mock.calls[0][3]).toStrictEqual(fixtureArg3)
-      })
-
-      test('result matched', () => {
-        expect(instance).toStrictEqual(fixtureResult)
+      test('instance matched', () => {
+        expect(context.instance).toStrictEqual(fixtureInstance)
       })
     })
   })
 
-  describe('composableContext', () => {
-    let composableContext: ComposableContext<any>
-    let fixtureInstance: symbol
-
-    beforeAll(() => {
-      setupInstance = (ctx) => {
-        composableContext = ctx
-        return fixtureInstance
-      }
-    })
+  describe('context', () => {
+    let context: ComposableContext<any>
 
     beforeEach(() => {
-      composable.create()
+      context = createContext(fixtureInstance)
     })
 
-    describe('use', () => {
+    describe('context.use', () => {
+      let use: UseFunction<any>
       let fixtureArg1: symbol
       let fixtureArg2: symbol
       let fixtureArg3: symbol
       let plugin: Plugin<any>
 
       beforeEach(() => {
-        composableContext.use(plugin, fixtureArg1, fixtureArg2, fixtureArg3)
+        use = context.use
+        use(plugin, fixtureArg1, fixtureArg2, fixtureArg3)
       })
 
       describe('already been applied', () => {
@@ -94,7 +65,7 @@ describe('createComposable', () => {
         })
 
         test('error match', () => {
-          expect(() => composableContext.use(plugin, fixtureArg1, fixtureArg2, fixtureArg3))
+          expect(() => context.use(plugin, fixtureArg1, fixtureArg2, fixtureArg3))
             .toThrowError('plugin has already been applied to target.')
         })
       })
@@ -170,17 +141,9 @@ describe('createComposable', () => {
       let fixtureContext: any
       let fixtureInstance: symbol
 
-      beforeAll(() => {
-        setupInstance = ({ use }) => {
-          fixtureInstance = Symbol('instance')
-          fixtureContext = {}
-          fixtureContext.use = use
-          return fixtureInstance
-        }
-      })
-
       beforeEach(() => {
-        composable.create()
+        fixtureInstance = Symbol('instance')
+        fixtureContext = createContext(fixtureInstance)
         fixtureContext.use(pluginMock)
       })
 
@@ -208,17 +171,9 @@ describe('createComposable', () => {
       let fixtureContext: any
       let fixtureInstance: symbol
 
-      beforeAll(() => {
-        fixtureContext = {}
-        setupInstance = ({ use }) => {
-          fixtureInstance = Symbol('instance')
-          fixtureContext.use = use
-          return fixtureInstance
-        }
-      })
-
       beforeEach(() => {
-        composable.create()
+        fixtureInstance = Symbol('instance')
+        fixtureContext = createContext(fixtureInstance)
         fixtureContext.use(pluginMock)
       })
 
@@ -256,19 +211,12 @@ describe('createComposable', () => {
     let pluginMock: jest.Mock
 
     describe('installing', () => {
-      let fixtureContext: { use: UseFunction<any> }
+      let fixtureContext: any
       let fixtureInstance: symbol
 
-      beforeAll(() => {
-        setupInstance = ({ use }) => {
-          fixtureInstance = Symbol('instance')
-          fixtureContext = { use }
-          return fixtureInstance
-        }
-      })
-
       beforeEach(() => {
-        composable.create()
+        fixtureInstance = Symbol('instance')
+        fixtureContext = createContext(fixtureInstance)
         fixtureContext.use(pluginMock)
       })
 

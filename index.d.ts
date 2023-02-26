@@ -5,9 +5,8 @@ export {
 
   type UseFunction,
   type ComposableContext,
-  type SetupInstanceFunction,
 
-  type CreateFunction,
+  type CreateContextFunction,
   type Composable,
 
   createComposable
