@@ -156,6 +156,24 @@ describe('createComposable', () => {
       })
     })
 
+    describe('plugin install error', () => {
+      let fixtureContext: any
+      let fixtureInstance: symbol
+
+      beforeEach(() => {
+        fixtureInstance = Symbol('instance')
+        fixtureContext = createContext(fixtureInstance)
+        expect(() => fixtureContext.use(() => {
+          throw new Error('plugin install error')
+        })).toThrowError('plugin install error')
+      })
+
+      test('error match', () => {
+        expect(() => composable.getCurrentInstance())
+          .toThrowError('getCurrentInstance() can only be used inside install().')
+      })
+    })
+
     describe('not installing', () => {
       test('errror matched', () => {
         expect(() => pluginMock())
