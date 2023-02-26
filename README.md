@@ -1,6 +1,7 @@
 # composable-hook
-[![NPM](https://nodei.co/npm/composable-hook.svg?downloads=true&downloadRank=true)](https://nodei.co/npm/composable-hook/)
- 
+[![npm](https://img.shields.io/npm/v/composable-hook)](https://www.npmjs.com/package/composable-hook)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/josudoey/composable-hook/action.yml)](https://github.com/josudoey/composable-hook/actions)
+
 - [composable-hook](#composable-hook)
   - [Composable](#composable)
   - [Installation](#installation)
