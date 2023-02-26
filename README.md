@@ -1,6 +1,11 @@
 # composable-hook
 [![NPM](https://nodei.co/npm/composable-hook.svg?downloads=true&downloadRank=true)](https://nodei.co/npm/composable-hook/)
  
+- [composable-hook](#composable-hook)
+  - [Composable](#composable)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Reference Docs](#reference-docs)
 
 ## Composable
 The `createComposable` function is a utility function that returns an object with several methods used to create and manage a context for plugins. The following methods are available:
@@ -12,11 +17,14 @@ The `createComposable` function is a utility function that returns an object wit
 
 ## Installation
 
-```
+Install with [npm](https://www.npmjs.com/):
+
+```sh
 $ npm install composable-hook
 ```
 
-## Hello Composable
+## Usage
+
 The code above shows an example of how to use the composable-hook library to create a modular and composable application.
 
 ```mjs
@@ -112,8 +120,8 @@ import { createConfigPlugin } from './config.js'
 import { createLoggerPlugin } from './logger.js'
 
 const core = createCore(...)
-                .use(createConfigPlugin(...))
-                .use(createLoggerPlugin(...)) 
+              .use(createConfigPlugin(...))
+              .use(createLoggerPlugin(...)) 
 ```
 
 
