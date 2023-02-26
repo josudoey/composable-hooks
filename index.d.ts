@@ -1,8 +1,14 @@
 export {
-  createComposable,
-  Install,
-  Use,
-  type Composable,
+  type InstallFunction,
+  type Installable,
   type Plugin,
-  type Useable
+
+  type UseFunction,
+  type ComposableContext,
+  type SetupInstanceFunction,
+
+  type CreateFunction,
+  type Composable,
+
+  createComposable
 } from './lib/createComposable'
