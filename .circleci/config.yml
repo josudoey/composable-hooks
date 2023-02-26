@@ -31,6 +31,7 @@ jobs:
           key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
           paths:
             - node_modules
+      - run:
           name: Run tests
           command: pnpm test
 
