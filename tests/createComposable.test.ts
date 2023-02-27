@@ -64,20 +64,26 @@ describe('createComposable', () => {
           plugin = jest.fn()
         })
 
-        test('error match', () => {
-          expect(() => context.use(plugin, fixtureArg1, fixtureArg2, fixtureArg3))
-            .toThrowError('plugin has already been applied to target.')
+        test('error matched', () => {
+          const consoleMock = jest.spyOn(console, 'error')
+          context.use(plugin)
+          expect(consoleMock.mock.calls[0][0]).toStrictEqual('plugin has already been applied to target.')
+          consoleMock.mockRestore()
         })
       })
 
       describe('installing call use', () => {
+        let consoleMock: jest.SpyInstance
         beforeAll(() => {
-          plugin = jest.fn()
+          consoleMock = jest.spyOn(console, 'error')
+          plugin = jest.fn(() => { use(() => {}) })
+        })
+        afterAll(() => {
+          consoleMock.mockRestore()
         })
 
-        test('error match', () => {
-          expect(() => context.use(() => { use(() => {}) }))
-            .toThrowError('plugin is currently being installed to the target.')
+        test('error matched', () => {
+          expect(consoleMock.mock.calls[0][0]).toStrictEqual('plugin is currently being installed to the target.')
         })
       })
 
@@ -179,16 +185,17 @@ describe('createComposable', () => {
         })).toThrowError('plugin install error')
       })
 
-      test('error match', () => {
-        expect(() => composable.getCurrentInstance())
-          .toThrowError('getCurrentInstance() can only be used inside install().')
+      test('currenct instance is undefined', () => {
+        expect(composable.getCurrentInstance()).toBeUndefined()
       })
     })
 
     describe('not installing', () => {
       test('errror matched', () => {
-        expect(() => pluginMock())
-          .toThrowError('getCurrentInstance() can only be used inside install().')
+        const consoleMock = jest.spyOn(console, 'error')
+        pluginMock()
+        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
+        consoleMock.mockRestore()
       })
     })
   })
@@ -220,19 +227,22 @@ describe('createComposable', () => {
       })
 
       test('duplicate', () => {
-        expect(() =>
-          fixtureContext.use(() => {
-            const duplicatedKey = Symbol('duplicatedKey')
-            composable.provide(duplicatedKey, 'test1')
-            composable.provide(duplicatedKey, 'test2')
-          }))
-          .toThrowError('injection Symbol(duplicatedKey) duplicate provided')
+        const consoleMock = jest.spyOn(console, 'error')
+        fixtureContext.use(() => {
+          const duplicatedKey = Symbol('duplicatedKey')
+          composable.provide(duplicatedKey, 'test1')
+          composable.provide(duplicatedKey, 'test2')
+        })
+        expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection Symbol(duplicatedKey) duplicate provided')
+        consoleMock.mockRestore()
       })
     })
 
-    test('not installing', function () {
-      expect(() => { composable.provide(Symbol('key'), 'value') })
-        .toThrowError('provide() can only be used inside install().')
+    test('not installin', () => {
+      const consoleMock = jest.spyOn(console, 'error')
+      composable.provide(Symbol('key'), 'value')
+      expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside install().')
+      consoleMock.mockRestore()
     })
   })
 
@@ -273,19 +283,23 @@ describe('createComposable', () => {
               expect(composable.inject(fixtureKey2)).toStrictEqual(fixtureValue2)
             })).not.toThrowError()
         })
-
-        test('injection not found', () => {
-          expect(() =>
-            fixtureContext.use(() => {
-              composable.inject(Symbol('other'))
-            })).toThrowError('injection "Symbol(other)" not found.')
-        })
       })
     })
 
-    test('not installing', function () {
-      expect(() => composable.inject(Symbol('error')))
-        .toThrowError('inject() can only be used inside install().')
+    test('injection not found', () => {
+      const consoleMock = jest.spyOn(console, 'error')
+      createContext({}).use(() => {
+        composable.inject(Symbol('other'))
+      })
+      expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection "Symbol(other)" not found.')
+      consoleMock.mockRestore()
+    })
+
+    test('not installin', () => {
+      const consoleMock = jest.spyOn(console, 'error')
+      composable.inject(Symbol('error'))
+      expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside install().')
+      consoleMock.mockRestore()
     })
   })
 })
