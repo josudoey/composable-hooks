@@ -121,8 +121,8 @@ import { createConfigPlugin } from './config.js'
 import { createLoggerPlugin } from './logger.js'
 
 const core = createCore(...)
-              .use(createConfigPlugin(...))
-              .use(createLoggerPlugin(...)) 
+              .use(createConfigPlugin(...) ,...)
+              .use(createLoggerPlugin(...) ,...) 
 ```
 
 
