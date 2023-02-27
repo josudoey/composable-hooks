@@ -35,7 +35,9 @@ import { createComposable } from 'composable-hook'
 // like koa or express or vue
 import { createApp } from './createApp.js' 
 
-// The core.js file imports the createComposable function from the composable-hook library, which returns a set of functions to create and manage a composable application. It also imports a createApp function from a createApp.js module.
+// The core.js file imports the createComposable function from the composable-hook library,
+// which returns a set of functions to create and manage a composable application.
+// It also imports a createApp function from a createApp.js module.
 
 const {
   getCurrentInstance,
@@ -45,7 +47,9 @@ const {
 } = createComposable()
 
 
-// The createCore function creates a new instance of the application by calling the createApp function and creating a new context using the createContext function from the createComposable module. It returns an object with a use function to add plugins to the application and an app property to access the application instance.
+// The createCore function creates a new instance of the application
+// by calling the createApp function and creating a new context using the createContext function from the createComposable module.
+// It returns an object with a use function to add plugins to the application and an app property to access the application instance.
 export function createCore (options) {
   const app = createApp(options)
   const { use } = createContext(app)
@@ -71,7 +75,9 @@ import { provide, inject } from './core.js'
 const key = Symbol('config')
 
 
-// The createConfigPlugin function returns an object with an install method that initializes the configuration and provides it to the application using the provide function.
+// The createConfigPlugin function returns an object
+// with an install method that initializes the configuration and provides
+// it to the application using the provide function.
 export function createConfigPlugin (options) {
   return {
     install (app) {
@@ -81,7 +87,8 @@ export function createConfigPlugin (options) {
   }
 }
 
-// The useConfig function returns the configuration object by calling the inject function with the key defined in config.js.
+// The useConfig function returns the configuration object
+// by calling the inject function with the key defined in config.js.
 export function useConfig () {
   return inject(key)
 }
@@ -93,7 +100,9 @@ import { provide, inject } from './core.js'
 import { useConfig } from './config.js'
 const key = Symbol('logger')
 
-// The createLoggerPlugin function returns an object with an install method that initializes the logger by accessing the configuration object using the useConfig function and provides it to the application using the provide function.
+// The createLoggerPlugin function returns an object with an install method
+// that initializes the logger by accessing the configuration object
+// using the useConfig function and provides it to the application using the provide function.
 export function createLoggerPlugin (options) {
   return {
     install (app) {
@@ -120,8 +129,8 @@ import { createConfigPlugin } from './config.js'
 import { createLoggerPlugin } from './logger.js'
 
 const core = createCore(...)
-              .use(createConfigPlugin(...) ,...)
-              .use(createLoggerPlugin(...) ,...) 
+              .use(createConfigPlugin(...), ...)
+              .use(createLoggerPlugin(...), ...) 
 ```
 
 ## Reference Docs
