@@ -94,17 +94,16 @@ import { useConfig } from './config.js'
 const key = Symbol('logger')
 
 // The createLoggerPlugin function returns an object with an install method that initializes the logger by accessing the configuration object using the useConfig function and provides it to the application using the provide function.
-
 export function createLoggerPlugin (options) {
   return {
     install (app) {
+      // useConfig function gets the config instance provided by createConfigPlugin's install function.
       const config = useConfig()
       // ... init logger
       provide(key, logger)
     }
   }
 }
-
 
 // The useLogger function returns the logger object by calling the inject function with the key defined in logger.js.
 export function useLogger () {
@@ -124,8 +123,6 @@ const core = createCore(...)
               .use(createConfigPlugin(...) ,...)
               .use(createLoggerPlugin(...) ,...) 
 ```
-
-
 
 ## Reference Docs
 - [composable](https://vuejs.org/guide/reusability/composables.html#what-is-a-composable)
