@@ -1,9 +1,10 @@
-export type InstallFunction<T, UseOptions=any[]> = (instance: T, ...options: UseOptions) => void
-export interface Installable<T, UseOptions=any[]> {
-  install: Install<T, UseOptions>
+import { type InstallFunction } from './createHook'
+
+export interface Installable<T, Options=any[]> {
+  install: Install<T, Options>
 }
 
-export type Plugin<T, UseOptions=any[]> = Install<T, UseOptions> | Installable<T, UseOptions>
+export type Plugin<T, UseOptions=any[]> = InstallFunction<T, UseOptions> | Installable<T, UseOptions>
 
 export type UseFunction<T, UseOptions=any[]> = (plugin: Plugin<T>, ...options: UseOptions) => this
 export interface ComposableContext<T, UseOptions=any[]> {
@@ -11,9 +12,9 @@ export interface ComposableContext<T, UseOptions=any[]> {
   instance: T
 }
 
-export type CreateContextFunction<T, UseOptions=any[]> = (instance: T) => ComposableContext<T, UseOptions>
+export type CreateComposableContextFunction<T, UseOptions=any[]> = (instance: T) => ComposableContext<T, UseOptions>
 export interface Composable <T, UseOptions> {
-  createContext: CreateContextFunction<T, UseOptions>
+  createContext: CreateComposableContextFunction<T, UseOptions>
   getCurrentInstance: () => T
   provide: <T>(key: string | unique symbol, value: T) => void
   inject: <T>(key: string | unique symbol) => T

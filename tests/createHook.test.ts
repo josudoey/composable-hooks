@@ -1,29 +1,26 @@
 import {
   type InstallFunction,
-  type Installable,
-  type Plugin,
+  type SetInstanceFunction,
 
-  type UseFunction,
-  type ComposableContext,
+  type HookContext,
+  type CreateHookContextFunction,
 
-  type CreateComposableContextFunction,
-  type Composable,
+  type Hook,
+  createHook
+} from '..'
 
-  createComposable
-} from '../'
-
-describe('createComposable', () => {
+describe('createHook', () => {
   let fixtureInstance: any
-  let composable: Composable<symbol, any[]>
-  let createContext: CreateComposableContextFunction<any, any[]>
+  let hook: Hook<symbol, any[]>
+  let createContext: CreateHookContextFunction<any, any[]>
 
   beforeEach(() => {
-    composable = createComposable()
-    createContext = composable.createContext
+    hook = createHook()
+    createContext = hook.createContext
   })
 
   describe('createContext', () => {
-    let context: ComposableContext<symbol>
+    let context: HookContext<symbol>
 
     beforeEach(() => {
       context = createContext(fixtureInstance)
@@ -41,42 +38,29 @@ describe('createComposable', () => {
   })
 
   describe('context', () => {
-    let context: ComposableContext<any>
+    let context: HookContext<any>
 
     beforeEach(() => {
       context = createContext(fixtureInstance)
     })
 
-    describe('context.use', () => {
-      let use: UseFunction<any>
+    describe('context.setInstance', () => {
+      let setInstance: SetInstanceFunction<symbol>
       let fixtureArg1: symbol
       let fixtureArg2: symbol
       let fixtureArg3: symbol
-      let plugin: Plugin<any>
+      let install: InstallFunction<any>
 
       beforeEach(() => {
-        use = context.use
-        use(plugin, fixtureArg1, fixtureArg2, fixtureArg3)
+        setInstance = context.setInstance
+        setInstance(install, fixtureArg1, fixtureArg2, fixtureArg3)
       })
 
-      describe('already been applied', () => {
-        beforeAll(() => {
-          plugin = jest.fn()
-        })
-
-        test('error matched', () => {
-          const consoleMock = jest.spyOn(console, 'error')
-          context.use(plugin)
-          expect(consoleMock.mock.calls[0][0]).toStrictEqual('plugin has already been applied to target.')
-          consoleMock.mockRestore()
-        })
-      })
-
-      describe('installing call use', () => {
+      describe('installing call setInstance', () => {
         let consoleMock: jest.SpyInstance
         beforeAll(() => {
           consoleMock = jest.spyOn(console, 'error')
-          plugin = jest.fn(() => { use(() => {}) })
+          install = jest.fn(() => { setInstance(() => {}) })
         })
         afterAll(() => {
           consoleMock.mockRestore()
@@ -95,36 +79,7 @@ describe('createComposable', () => {
           fixtureArg1 = Symbol('arg1')
           fixtureArg2 = Symbol('arg2')
           fixtureArg3 = Symbol('arg3')
-          plugin = installFunctionMock = jest.fn()
-        })
-
-        test('installFunctionMock called', () => {
-          expect(installFunctionMock).toBeCalled()
-        })
-
-        test('instance matched', () => {
-          expect(installFunctionMock.mock.calls[0][0]).toStrictEqual(fixtureInstance)
-        })
-
-        test('options matched', () => {
-          expect(installFunctionMock.mock.calls[0][1]).toStrictEqual(fixtureArg1)
-          expect(installFunctionMock.mock.calls[0][2]).toStrictEqual(fixtureArg2)
-          expect(installFunctionMock.mock.calls[0][3]).toStrictEqual(fixtureArg3)
-        })
-      })
-
-      describe('Installable plugin', () => {
-        let installable: Installable<any>
-        let installFunctionMock: jest.Mock
-
-        beforeAll(() => {
-          fixtureInstance = Symbol('instance')
-          fixtureArg1 = Symbol('arg1')
-          fixtureArg2 = Symbol('arg2')
-          fixtureArg3 = Symbol('arg3')
-          installFunctionMock = jest.fn()
-          installable = { install: installFunctionMock }
-          plugin = installable
+          install = installFunctionMock = jest.fn()
         })
 
         test('installFunctionMock called', () => {
@@ -146,11 +101,11 @@ describe('createComposable', () => {
 
   describe('getCurrentInstance', () => {
     let currentInstance: any
-    let pluginMock: jest.Mock
+    let installMock: jest.Mock
 
     beforeEach(() => {
-      pluginMock = jest.fn(() => {
-        currentInstance = composable.getCurrentInstance()
+      installMock = jest.fn(() => {
+        currentInstance = hook.getCurrentInstance()
       })
     })
 
@@ -161,11 +116,11 @@ describe('createComposable', () => {
       beforeEach(() => {
         fixtureInstance = Symbol('instance')
         fixtureContext = createContext(fixtureInstance)
-        fixtureContext.use(pluginMock)
+        fixtureContext.setInstance(installMock)
       })
 
-      test('plugin called', () => {
-        expect(pluginMock).toBeCalled()
+      test('install called', () => {
+        expect(installMock).toBeCalled()
       })
 
       test('instance matched', () => {
@@ -173,27 +128,27 @@ describe('createComposable', () => {
       })
     })
 
-    describe('plugin install error', () => {
+    describe('install error', () => {
       let fixtureContext: any
       let fixtureInstance: symbol
 
       beforeEach(() => {
         fixtureInstance = Symbol('instance')
         fixtureContext = createContext(fixtureInstance)
-        expect(() => fixtureContext.use(() => {
-          throw new Error('plugin install error')
-        })).toThrowError('plugin install error')
+        expect(() => fixtureContext.setInstance(() => {
+          throw new Error('install error')
+        })).toThrowError('install error')
       })
 
       test('currenct instance is undefined', () => {
-        expect(composable.getCurrentInstance()).toBeUndefined()
+        expect(hook.getCurrentInstance()).toBeUndefined()
       })
     })
 
     describe('not installing', () => {
       test('errror matched', () => {
         const consoleMock = jest.spyOn(console, 'error')
-        pluginMock()
+        installMock()
         expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
         consoleMock.mockRestore()
       })
@@ -201,7 +156,7 @@ describe('createComposable', () => {
   })
 
   describe('provide', () => {
-    let pluginMock: jest.Mock
+    let installMock: jest.Mock
 
     describe('installing', () => {
       let fixtureContext: any
@@ -210,28 +165,28 @@ describe('createComposable', () => {
       beforeEach(() => {
         fixtureInstance = Symbol('instance')
         fixtureContext = createContext(fixtureInstance)
-        fixtureContext.use(pluginMock)
+        fixtureContext.setInstance(installMock)
       })
 
       describe('happy path', () => {
         beforeAll(() => {
-          pluginMock = jest.fn(() => {
-            composable.provide(Symbol('a'), 'test')
-            composable.provide(Symbol('a'), 'test')
+          installMock = jest.fn(() => {
+            hook.provide(Symbol('a'), 'test')
+            hook.provide(Symbol('a'), 'test')
           })
         })
 
         test('plugin called', () => {
-          expect(pluginMock).toBeCalled()
+          expect(installMock).toBeCalled()
         })
       })
 
       test('duplicate', () => {
         const consoleMock = jest.spyOn(console, 'error')
-        fixtureContext.use(() => {
+        fixtureContext.setInstance(() => {
           const duplicatedKey = Symbol('duplicatedKey')
-          composable.provide(duplicatedKey, 'test1')
-          composable.provide(duplicatedKey, 'test2')
+          hook.provide(duplicatedKey, 'test1')
+          hook.provide(duplicatedKey, 'test2')
         })
         expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection Symbol(duplicatedKey) duplicate provided')
         consoleMock.mockRestore()
@@ -240,14 +195,14 @@ describe('createComposable', () => {
 
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error')
-      composable.provide(Symbol('key'), 'value')
+      hook.provide(Symbol('key'), 'value')
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside install().')
       consoleMock.mockRestore()
     })
   })
 
   describe('inject', () => {
-    let pluginMock: jest.Mock
+    let installMock: jest.Mock
 
     describe('installing', () => {
       let fixtureContext: any
@@ -256,7 +211,7 @@ describe('createComposable', () => {
       beforeEach(() => {
         fixtureInstance = Symbol('instance')
         fixtureContext = createContext(fixtureInstance)
-        fixtureContext.use(pluginMock)
+        fixtureContext.setInstance(installMock)
       })
 
       describe('happy path', () => {
@@ -270,17 +225,17 @@ describe('createComposable', () => {
           fixtureKey2 = Symbol('key2')
           fixtureValue1 = Symbol('value1')
           fixtureValue2 = Symbol('value2')
-          pluginMock = jest.fn(() => {
-            composable.provide(fixtureKey1, fixtureValue1)
-            composable.provide(fixtureKey2, fixtureValue2)
+          installMock = jest.fn(() => {
+            hook.provide(fixtureKey1, fixtureValue1)
+            hook.provide(fixtureKey2, fixtureValue2)
           })
         })
 
         test('injection matched', () => {
           expect(() =>
-            fixtureContext.use(() => {
-              expect(composable.inject(fixtureKey1)).toStrictEqual(fixtureValue1)
-              expect(composable.inject(fixtureKey2)).toStrictEqual(fixtureValue2)
+            fixtureContext.setInstance(() => {
+              expect(hook.inject(fixtureKey1)).toStrictEqual(fixtureValue1)
+              expect(hook.inject(fixtureKey2)).toStrictEqual(fixtureValue2)
             })).not.toThrowError()
         })
       })
@@ -288,8 +243,8 @@ describe('createComposable', () => {
 
     test('injection not found', () => {
       const consoleMock = jest.spyOn(console, 'error')
-      createContext({}).use(() => {
-        composable.inject(Symbol('other'))
+      createContext({}).setInstance(() => {
+        hook.inject(Symbol('other'))
       })
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection "Symbol(other)" not found.')
       consoleMock.mockRestore()
@@ -297,7 +252,7 @@ describe('createComposable', () => {
 
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error')
-      composable.inject(Symbol('error'))
+      hook.inject(Symbol('error'))
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside install().')
       consoleMock.mockRestore()
     })
