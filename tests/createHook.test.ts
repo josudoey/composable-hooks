@@ -57,17 +57,43 @@ describe('createHook', () => {
       })
 
       describe('installing call setInstance', () => {
-        let consoleMock: jest.SpyInstance
+        let fixtureNumbers: number[]
+        let expectedSum: number
+        let otherContexts: Array<HookContext<{ r: number }>>
+        const stackSize = 1000
+
         beforeAll(() => {
-          consoleMock = jest.spyOn(console, 'error')
-          install = jest.fn(() => { setInstance(() => {}) })
-        })
-        afterAll(() => {
-          consoleMock.mockRestore()
+          fixtureNumbers = []
+          otherContexts = []
+          expectedSum = 0
+          for (let i = 0; i < stackSize; i++) {
+            const r = Math.random()
+            fixtureNumbers.push(r)
+            expectedSum += r
+            otherContexts.push(createContext({ r: 0 }))
+          }
+
+          function setInstanceForR (i: number): void {
+            otherContexts[i].setInstance((instance: object) => {
+              if (i + 1 < fixtureNumbers.length) {
+                setInstanceForR(i + 1)
+              }
+
+              Object.assign(instance, {
+                r: fixtureNumbers[i]
+              })
+            })
+          }
+
+          install = jest.fn(() => { setInstanceForR(0) })
         })
 
-        test('error matched', () => {
-          expect(consoleMock.mock.calls[0][0]).toStrictEqual('currently being installed to the instance.')
+        test('sum matched', () => {
+          let sum = 0
+          for (let i = 0; i < stackSize; i++) {
+            sum += otherContexts[i].instance.r
+          }
+          expect(sum).toStrictEqual(expectedSum)
         })
       })
 
@@ -141,13 +167,16 @@ describe('createHook', () => {
       })
 
       test('currenct instance is undefined', () => {
+        const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         expect(hook.getCurrentInstance()).toBeUndefined()
+        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
+        consoleMock.mockRestore()
       })
     })
 
     describe('not installing', () => {
       test('errror matched', () => {
-        const consoleMock = jest.spyOn(console, 'error')
+        const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         installMock()
         expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
         consoleMock.mockRestore()
@@ -182,7 +211,7 @@ describe('createHook', () => {
       })
 
       test('duplicate', () => {
-        const consoleMock = jest.spyOn(console, 'error')
+        const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         fixtureContext.setInstance(() => {
           const duplicatedKey = Symbol('duplicatedKey')
           hook.provide(duplicatedKey, 'test1')
@@ -194,7 +223,7 @@ describe('createHook', () => {
     })
 
     test('not installing', () => {
-      const consoleMock = jest.spyOn(console, 'error')
+      const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       hook.provide(Symbol('key'), 'value')
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside install().')
       consoleMock.mockRestore()
@@ -242,7 +271,7 @@ describe('createHook', () => {
     })
 
     test('injection not found', () => {
-      const consoleMock = jest.spyOn(console, 'error')
+      const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       createContext({}).setInstance(() => {
         hook.inject(Symbol('other'))
       })
@@ -251,7 +280,7 @@ describe('createHook', () => {
     })
 
     test('not installing', () => {
-      const consoleMock = jest.spyOn(console, 'error')
+      const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       hook.inject(Symbol('error'))
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside install().')
       consoleMock.mockRestore()

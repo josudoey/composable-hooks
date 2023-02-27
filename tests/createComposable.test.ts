@@ -65,7 +65,7 @@ describe('createComposable', () => {
         })
 
         test('error matched', () => {
-          const consoleMock = jest.spyOn(console, 'error')
+          const consoleMock = jest.spyOn(console, 'error').mockImplementation()
           context.use(plugin)
           expect(consoleMock.mock.calls[0][0]).toStrictEqual('plugin has already been applied to target.')
           consoleMock.mockRestore()
@@ -73,17 +73,21 @@ describe('createComposable', () => {
       })
 
       describe('installing call use', () => {
-        let consoleMock: jest.SpyInstance
+        let fixtureOtherSymbol: symbol
+        let otherContext: ComposableContext<{ symbol: symbol }>
         beforeAll(() => {
-          consoleMock = jest.spyOn(console, 'error')
-          plugin = jest.fn(() => { use(() => {}) })
-        })
-        afterAll(() => {
-          consoleMock.mockRestore()
+          fixtureOtherSymbol = Symbol('other')
+          plugin = jest.fn(() => {
+            otherContext = createContext({})
+            otherContext.use((instance) => {
+              instance.symbol = fixtureOtherSymbol
+            })
+          })
         })
 
-        test('error matched', () => {
-          expect(consoleMock.mock.calls[0][0]).toStrictEqual('currently being installed to the instance.')
+        test('result matched', () => {
+          expect(plugin).toBeCalled()
+          expect(otherContext.instance.symbol).toStrictEqual(fixtureOtherSymbol)
         })
       })
 
@@ -186,13 +190,16 @@ describe('createComposable', () => {
       })
 
       test('currenct instance is undefined', () => {
+        const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         expect(composable.getCurrentInstance()).toBeUndefined()
+        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
+        consoleMock.mockRestore()
       })
     })
 
     describe('not installing', () => {
       test('errror matched', () => {
-        const consoleMock = jest.spyOn(console, 'error')
+        const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         pluginMock()
         expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
         consoleMock.mockRestore()
@@ -227,7 +234,7 @@ describe('createComposable', () => {
       })
 
       test('duplicate', () => {
-        const consoleMock = jest.spyOn(console, 'error')
+        const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         fixtureContext.use(() => {
           const duplicatedKey = Symbol('duplicatedKey')
           composable.provide(duplicatedKey, 'test1')
@@ -239,7 +246,7 @@ describe('createComposable', () => {
     })
 
     test('not installing', () => {
-      const consoleMock = jest.spyOn(console, 'error')
+      const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       composable.provide(Symbol('key'), 'value')
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside install().')
       consoleMock.mockRestore()
@@ -287,7 +294,7 @@ describe('createComposable', () => {
     })
 
     test('injection not found', () => {
-      const consoleMock = jest.spyOn(console, 'error')
+      const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       createContext({}).use(() => {
         composable.inject(Symbol('other'))
       })
@@ -296,7 +303,7 @@ describe('createComposable', () => {
     })
 
     test('not installing', () => {
-      const consoleMock = jest.spyOn(console, 'error')
+      const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       composable.inject(Symbol('error'))
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside install().')
       consoleMock.mockRestore()
