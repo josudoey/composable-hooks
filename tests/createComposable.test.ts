@@ -70,6 +70,17 @@ describe('createComposable', () => {
         })
       })
 
+      describe('installing call use', () => {
+        beforeAll(() => {
+          plugin = jest.fn()
+        })
+
+        test('error match', () => {
+          expect(() => context.use(() => { use(() => {}) }))
+            .toThrowError('plugin is currently being installed to the target.')
+        })
+      })
+
       describe('InstallFunction plugin', () => {
         let installFunctionMock: jest.Mock<InstallFunction<any>>
 
