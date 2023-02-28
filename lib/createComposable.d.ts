@@ -1,11 +1,11 @@
 import {
-  type HookFunction,
-  type InstallFunction,
+  type WrapFunction,
   type GetCurrentInstanceFunction,
   type ProvideFunction,
   type InjectFunction
 } from './createHooksContext'
 
+export type InstallFunction<T, Options=any[]> = (instance: T, ...options: Options) => void
 export interface Installable<T, Options=any[]> {
   install: Install<T, Options>
 }
@@ -14,7 +14,7 @@ export type Plugin<T, UseOptions=any[]> = InstallFunction<T, UseOptions> | Insta
 
 export type UseFunction<T, UseOptions=any[]> = (plugin: Plugin<T>, ...options: UseOptions) => this
 export interface ComposableContext<T, UseOptions=any[]> {
-  hook: HookFunction<T, UseOptions>
+  wrap: WrapFunction
   use: UseFunction<T, UseOptions>
 }
 

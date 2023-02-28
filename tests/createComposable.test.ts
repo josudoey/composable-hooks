@@ -1,4 +1,8 @@
 import {
+  type GetCurrentInstanceFunction,
+  type ProvideFunction,
+  type InjectFunction,
+
   type InstallFunction,
   type Installable,
   type Plugin,
@@ -16,10 +20,16 @@ describe('createComposable', () => {
   let fixtureInstance: any
   let composable: Composable<symbol, any[]>
   let createContext: CreateComposableContextFunction<any, any[]>
+  let getCurrentInstance: GetCurrentInstanceFunction<any>
+  let provide: ProvideFunction<any>
+  let inject: InjectFunction<any>
 
   beforeEach(() => {
     composable = createComposable()
     createContext = composable.createContext
+    getCurrentInstance = composable.getCurrentInstance
+    provide = composable.provide
+    inject = composable.inject
   })
 
   describe('createContext', () => {
@@ -35,7 +45,7 @@ describe('createComposable', () => {
       })
 
       test('instance matched', () => {
-        expect(context.hook()).toStrictEqual(fixtureInstance)
+        expect(context.wrap(getCurrentInstance)()).toStrictEqual(fixtureInstance)
       })
     })
   })
@@ -87,7 +97,7 @@ describe('createComposable', () => {
 
         test('result matched', () => {
           expect(plugin).toBeCalled()
-          expect(otherContext.hook().symbol).toStrictEqual(fixtureOtherSymbol)
+          expect(otherContext.wrap(getCurrentInstance)().symbol).toStrictEqual(fixtureOtherSymbol)
         })
       })
 
@@ -223,8 +233,8 @@ describe('createComposable', () => {
       describe('happy path', () => {
         beforeAll(() => {
           pluginMock = jest.fn(() => {
-            composable.provide(Symbol('a'), 'test')
-            composable.provide(Symbol('a'), 'test')
+            provide(Symbol('a'), 'test')
+            provide(Symbol('a'), 'test')
           })
         })
 
@@ -237,8 +247,8 @@ describe('createComposable', () => {
         const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         fixtureContext.use(() => {
           const duplicatedKey = Symbol('duplicatedKey')
-          composable.provide(duplicatedKey, 'test1')
-          composable.provide(duplicatedKey, 'test2')
+          provide(duplicatedKey, 'test1')
+          provide(duplicatedKey, 'test2')
         })
         expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection Symbol(duplicatedKey) duplicate provided')
         consoleMock.mockRestore()
@@ -247,7 +257,7 @@ describe('createComposable', () => {
 
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
-      composable.provide(Symbol('key'), 'value')
+      provide(Symbol('key'), 'value')
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside hook().')
       consoleMock.mockRestore()
     })
@@ -278,16 +288,16 @@ describe('createComposable', () => {
           fixtureValue1 = Symbol('value1')
           fixtureValue2 = Symbol('value2')
           pluginMock = jest.fn(() => {
-            composable.provide(fixtureKey1, fixtureValue1)
-            composable.provide(fixtureKey2, fixtureValue2)
+            provide(fixtureKey1, fixtureValue1)
+            provide(fixtureKey2, fixtureValue2)
           })
         })
 
         test('injection matched', () => {
           expect(() =>
             fixtureContext.use(() => {
-              expect(composable.inject(fixtureKey1)).toStrictEqual(fixtureValue1)
-              expect(composable.inject(fixtureKey2)).toStrictEqual(fixtureValue2)
+              expect(inject(fixtureKey1)).toStrictEqual(fixtureValue1)
+              expect(inject(fixtureKey2)).toStrictEqual(fixtureValue2)
             })).not.toThrowError()
         })
       })
@@ -296,7 +306,7 @@ describe('createComposable', () => {
     test('injection not found', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       createContext({}).use(() => {
-        composable.inject(Symbol('other'))
+        inject(Symbol('other'))
       })
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection "Symbol(other)" not found.')
       consoleMock.mockRestore()
@@ -304,7 +314,7 @@ describe('createComposable', () => {
 
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
-      composable.inject(Symbol('error'))
+      inject(Symbol('error'))
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside hook().')
       consoleMock.mockRestore()
     })

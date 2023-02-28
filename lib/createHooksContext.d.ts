@@ -1,13 +1,14 @@
-export type InstallFunction<T, Options=any[]> = (instance: T, ...options: Options) => void
-export type HookFunction<T, Options=any[]> = (install?: InstallFunction<T>, ...options: Options) => T
+export type HookFunction<T=any, Options=any> = (...options: Options) => T
+export type HooksFunction<T, Options=any> = (...options: Options) => T
+export type WrapFunction = (hook: HookFunction<T, Options>) => HooksFunction<T, Options>
+export type CreateFunction<T> = (instance: T) => WrapFunction
 
-export type WrapFunction<T, Options=any[]> = (instance: T) => HookFunction<T, Options>
 export type GetCurrentInstanceFunction<T> = () => T
 export type ProvideFunction<T> = (key: string | unique symbol, value: T) => void
 export type InjectFunction<T> = (key: string | unique symbol) => T
 
 export interface HooksContext <T, Options> {
-  wrap: WrapFunction<T, Options>
+  create: CreateFunction<T, Options>
   getCurrentInstance: () => T
   provide: ProvideFunction<any>
   inject: InjectFunction<any>
