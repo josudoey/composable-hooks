@@ -6,7 +6,11 @@
   - [Installation](#installation)
   - [Usage](#usage)
     - [HooksContext](#hookscontext)
+      - [use default wrap](#use-default-wrap)
+      - [use default hooksContext](#use-default-hookscontext)
+      - [use createHooksContext](#use-createhookscontext)
     - [Composable](#composable)
+      - [use createComposable](#use-createcomposable)
   - [Reference Docs](#reference-docs)
 
 ## Installation
@@ -27,6 +31,19 @@ $ npm install composable-hooks
 - `provide(key, value)`: Registers a value with a key in the current hook's "provides" object. This object can be used to share values between different hooks.
 - `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
 
+#### use default wrap
+
+```mjs
+import { wrap } from 'composable-hooks'
+
+const getDefaultInstanceHooks = wrap(function () {
+  return getCurrentInstance()
+})
+
+console.log(getDefaultInstanceHooks())
+```
+
+#### use default hooksContext
 ```mjs
 import { create, provide, inject, getCurrentInstance } from 'composable-hooks'
 
@@ -60,6 +77,16 @@ logger.info('hello')
 ```
 
 
+#### use createHooksContext
+
+```mjs
+import { createHooksContext } from 'composable-hooks'
+const { create, provide, inject, getCurrentInstance } = createHooksContext()
+// other handle ...
+
+```
+
+
 ### Composable
 The `createComposable` function is a utility function that returns an object with several methods used to create and manage a context for plugins. The following methods are available:
 
@@ -71,6 +98,7 @@ The `createComposable` function is a utility function that returns an object wit
 - `inject(key)`: retrieves the value associated with a key in the current context. It can only be used inside the hook() method.
 
 
+#### use createComposable
 The code above shows an example of how to use the composable-hooks library to create a modular and composable application.
 
 ```mjs

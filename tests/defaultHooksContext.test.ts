@@ -3,6 +3,7 @@ import {
   type HookFunction,
   type HooksFunction,
 
+  wrap,
   create,
   getCurrentInstance,
   provide,
@@ -11,6 +12,12 @@ import {
 
 describe('defaultHooksContext', () => {
   let fixtureInstance: any
+
+  describe('wrap', () => {
+    test('instance matched', () => {
+      expect(wrap(() => getCurrentInstance())()).toStrictEqual(null)
+    })
+  })
 
   describe('create', () => {
     let wrap: WrapFunction

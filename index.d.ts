@@ -26,8 +26,9 @@ export {
 } from './lib/createComposable'
 
 export {
+  wrap,
   create,
   getCurrentInstance,
   provide,
   inject
-} from './lib/default'
+} from './lib/defaultHooksContext'
