@@ -147,7 +147,8 @@ const core = createCore(...)
 
 
 ## Reference Docs
-- [hooks](https://reactjs.org/docs/hooks-intro.html)
 - [composable](https://vuejs.org/guide/reusability/composables.html#what-is-a-composable)
+- [hooks](https://reactjs.org/docs/hooks-intro.html)
 - [context](https://github.com/vuejs/core/blob/a0e7dc334356e9e6ffaa547d29e55b34b9b8a04d/packages/runtime-core/src/apiCreateApp.ts#L204)
 - [injection](https://github.com/vuejs/core/blob/a0e7dc334356e9e6ffaa547d29e55b34b9b8a04d/packages/runtime-core/src/apiInject.ts#L6)
+- [react fiber](https://github.com/facebook/react/blob/6ff1733e63fdb948ae973a713741b4526102c73c/packages/react-reconciler/src/ReactFiberWorkLoop.js#L1910-L1927)
