@@ -141,6 +141,7 @@ const core = createCore(...)
 `createHooksContext` returns an object with several functions that can be used to create and manipulate hooks. Here is an overview of the available functions:
 
 - `wrap(instance)`: Creates a hook that wraps an instance object and allows for the installation of additional functionality through the install function.
+  - `hook(install?, ...)`
 - `getCurrentInstance()`: Returns the current instance object that is being modified by the hook. This function can only be used inside the install function.
 - `provide(key, value)`: Registers a value with a key in the current hook's "provides" object. This object can be used to share values between different hooks.
 - `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
