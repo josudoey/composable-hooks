@@ -41,6 +41,8 @@ const getDefaultInstanceHooks = wrap(function () {
 })
 
 console.log(getDefaultInstanceHooks())
+// Output
+// null
 ```
 
 #### use default hooksContext
