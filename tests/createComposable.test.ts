@@ -35,7 +35,7 @@ describe('createComposable', () => {
       })
 
       test('instance matched', () => {
-        expect(context.instance).toStrictEqual(fixtureInstance)
+        expect(context.hook()).toStrictEqual(fixtureInstance)
       })
     })
   })
@@ -87,7 +87,7 @@ describe('createComposable', () => {
 
         test('result matched', () => {
           expect(plugin).toBeCalled()
-          expect(otherContext.instance.symbol).toStrictEqual(fixtureOtherSymbol)
+          expect(otherContext.hook().symbol).toStrictEqual(fixtureOtherSymbol)
         })
       })
 

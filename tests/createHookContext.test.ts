@@ -1,82 +1,88 @@
 import {
   type InstallFunction,
-  type SetInstanceFunction,
+  type HookFunction,
 
+  type WrapFunction,
+  type GetCurrentInstanceFunction,
+  type ProvideFunction,
+  type InjectFunction,
   type HookContext,
-  type CreateHookContextFunction,
 
-  type Hook,
-  createHook
+  createHookContext
 } from '..'
 
-describe('createHook', () => {
+describe('createHookContext', () => {
   let fixtureInstance: any
-  let hook: Hook<symbol, any[]>
-  let createContext: CreateHookContextFunction<any, any[]>
+  let context: HookContext<any, any[]>
+  let getCurrentInstance: GetCurrentInstanceFunction<any>
+  let wrap: WrapFunction<any, any[]>
+  let provide: ProvideFunction<any>
+  let inject: InjectFunction<any>
 
   beforeEach(() => {
-    hook = createHook()
-    createContext = hook.createContext
+    context = createHookContext()
+    wrap = context.wrap
+    getCurrentInstance = context.getCurrentInstance
+    provide = context.provide
+    inject = context.inject
   })
 
   describe('createContext', () => {
-    let context: HookContext<symbol>
+    let hook: HookFunction<symbol>
 
     beforeEach(() => {
-      context = createContext(fixtureInstance)
+      hook = wrap(fixtureInstance)
     })
 
-    describe('happy path', () => {
+    describe('get instance', () => {
       beforeAll(() => {
         fixtureInstance = Symbol('instance')
       })
 
       test('instance matched', () => {
-        expect(context.instance).toStrictEqual(fixtureInstance)
+        expect(hook()).toStrictEqual(fixtureInstance)
       })
     })
   })
 
-  describe('context', () => {
-    let context: HookContext<any>
+  describe('wrap', () => {
+    let hook: HookFunction<symbol>
 
     beforeEach(() => {
-      context = createContext(fixtureInstance)
+      hook = wrap(fixtureInstance)
     })
 
-    describe('context.setInstance', () => {
-      let setInstance: SetInstanceFunction<symbol>
+    describe('hook', () => {
       let fixtureArg1: symbol
       let fixtureArg2: symbol
       let fixtureArg3: symbol
       let install: InstallFunction<any>
 
       beforeEach(() => {
-        setInstance = context.setInstance
-        setInstance(install, fixtureArg1, fixtureArg2, fixtureArg3)
+        hook(install, fixtureArg1, fixtureArg2, fixtureArg3)
       })
 
-      describe('installing call setInstance', () => {
+      describe('installing call hook', () => {
         let fixtureNumbers: number[]
         let expectedSum: number
-        let otherContexts: Array<HookContext<{ r: number }>>
+        let randHooks: Array<HookFunction<{ r: number }>>
         const stackSize = 1000
 
         beforeAll(() => {
           fixtureNumbers = []
-          otherContexts = []
+          randHooks = []
           expectedSum = 0
           for (let i = 0; i < stackSize; i++) {
             const r = Math.random()
             fixtureNumbers.push(r)
             expectedSum += r
-            otherContexts.push(createContext({ r: 0 }))
+            randHooks.push(wrap({ r: 0 }))
           }
 
-          function setInstanceForR (i: number): void {
-            otherContexts[i].setInstance((instance: object) => {
+          function setupForR (i: number): void {
+            randHooks[i]((instance: object) => {
               if (i + 1 < fixtureNumbers.length) {
-                setInstanceForR(i + 1)
+                setupForR(i + 1)
               }
 
               Object.assign(instance, {
@@ -85,13 +91,15 @@ describe('createHook', () => {
             })
           }
 
-          install = jest.fn(() => { setInstanceForR(0) })
+          install = jest.fn(() => { setupForR(0) })
         })
 
         test('sum matched', () => {
           let sum = 0
           for (let i = 0; i < stackSize; i++) {
-            sum += otherContexts[i].instance.r
+            const r: number = randHooks[i]().r
+            expect(r).toStrictEqual(fixtureNumbers[i])
+            sum += r
           }
           expect(sum).toStrictEqual(expectedSum)
         })
@@ -131,18 +139,18 @@ describe('createHook', () => {
 
     beforeEach(() => {
       installMock = jest.fn(() => {
-        currentInstance = hook.getCurrentInstance()
+        currentInstance = getCurrentInstance()
       })
     })
 
     describe('installing', () => {
-      let fixtureContext: any
+      let fixtureHook: any
       let fixtureInstance: symbol
 
       beforeEach(() => {
         fixtureInstance = Symbol('instance')
-        fixtureContext = createContext(fixtureInstance)
-        fixtureContext.setInstance(installMock)
+        fixtureHook = wrap(fixtureInstance)
+        fixtureHook(installMock)
       })
 
       test('install called', () => {
@@ -155,20 +163,20 @@ describe('createHook', () => {
     })
 
     describe('install error', () => {
-      let fixtureContext: any
+      let fixtureHook: any
       let fixtureInstance: symbol
 
       beforeEach(() => {
         fixtureInstance = Symbol('instance')
-        fixtureContext = createContext(fixtureInstance)
-        expect(() => fixtureContext.setInstance(() => {
+        fixtureHook = wrap(fixtureInstance)
+        expect(() => fixtureHook(() => {
           throw new Error('install error')
         })).toThrowError('install error')
       })
 
       test('currenct instance is undefined', () => {
         const consoleMock = jest.spyOn(console, 'error').mockImplementation()
-        expect(hook.getCurrentInstance()).toBeUndefined()
+        expect(getCurrentInstance()).toBeUndefined()
         expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
         consoleMock.mockRestore()
       })
@@ -188,20 +196,20 @@ describe('createHook', () => {
     let installMock: jest.Mock
 
     describe('installing', () => {
-      let fixtureContext: any
+      let fixtureHook: any
       let fixtureInstance: symbol
 
       beforeEach(() => {
         fixtureInstance = Symbol('instance')
-        fixtureContext = createContext(fixtureInstance)
-        fixtureContext.setInstance(installMock)
+        fixtureHook = wrap(fixtureInstance)
+        fixtureHook(installMock)
       })
 
       describe('happy path', () => {
         beforeAll(() => {
           installMock = jest.fn(() => {
-            hook.provide(Symbol('a'), 'test')
-            hook.provide(Symbol('a'), 'test')
+            provide(Symbol('a'), 'test')
+            provide(Symbol('a'), 'test')
           })
         })
 
@@ -212,10 +220,10 @@ describe('createHook', () => {
 
       test('duplicate', () => {
         const consoleMock = jest.spyOn(console, 'error').mockImplementation()
-        fixtureContext.setInstance(() => {
+        fixtureHook(() => {
           const duplicatedKey = Symbol('duplicatedKey')
-          hook.provide(duplicatedKey, 'test1')
-          hook.provide(duplicatedKey, 'test2')
+          provide(duplicatedKey, 'test1')
+          provide(duplicatedKey, 'test2')
         })
         expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection Symbol(duplicatedKey) duplicate provided')
         consoleMock.mockRestore()
@@ -224,7 +232,7 @@ describe('createHook', () => {
 
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
-      hook.provide(Symbol('key'), 'value')
+      provide(Symbol('key'), 'value')
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside install().')
       consoleMock.mockRestore()
     })
@@ -234,13 +242,13 @@ describe('createHook', () => {
     let installMock: jest.Mock
 
     describe('installing', () => {
-      let fixtureContext: any
+      let hook: HookFunction<symbol>
       let fixtureInstance: symbol
 
       beforeEach(() => {
         fixtureInstance = Symbol('instance')
-        fixtureContext = createContext(fixtureInstance)
-        fixtureContext.setInstance(installMock)
+        hook = wrap(fixtureInstance)
+        hook(installMock)
       })
 
       describe('happy path', () => {
@@ -255,16 +263,16 @@ describe('createHook', () => {
           fixtureValue1 = Symbol('value1')
           fixtureValue2 = Symbol('value2')
           installMock = jest.fn(() => {
-            hook.provide(fixtureKey1, fixtureValue1)
-            hook.provide(fixtureKey2, fixtureValue2)
+            context.provide(fixtureKey1, fixtureValue1)
+            context.provide(fixtureKey2, fixtureValue2)
           })
         })
 
         test('injection matched', () => {
           expect(() =>
-            fixtureContext.setInstance(() => {
-              expect(hook.inject(fixtureKey1)).toStrictEqual(fixtureValue1)
-              expect(hook.inject(fixtureKey2)).toStrictEqual(fixtureValue2)
+            hook(() => {
+              expect(context.inject(fixtureKey1)).toStrictEqual(fixtureValue1)
+              expect(context.inject(fixtureKey2)).toStrictEqual(fixtureValue2)
             })).not.toThrowError()
         })
       })
@@ -272,8 +280,8 @@ describe('createHook', () => {
 
     test('injection not found', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
-      createContext({}).setInstance(() => {
-        hook.inject(Symbol('other'))
+      wrap(Symbol('dummy'))(() => {
+        context.inject(Symbol('other'))
       })
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection "Symbol(other)" not found.')
       consoleMock.mockRestore()
@@ -281,7 +289,7 @@ describe('createHook', () => {
 
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
-      hook.inject(Symbol('error'))
+      inject(Symbol('error'))
       expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside install().')
       consoleMock.mockRestore()
     })

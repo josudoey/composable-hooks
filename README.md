@@ -3,18 +3,11 @@
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/josudoey/composable-hook/action.yml)](https://github.com/josudoey/composable-hook/actions)
 
 - [composable-hook](#composable-hook)
-  - [Composable](#composable)
   - [Installation](#installation)
-  - [Usage](#usage)
+  - [Composable](#composable)
+    - [Usage](#usage)
+  - [Hook](#hook)
   - [Reference Docs](#reference-docs)
-
-## Composable
-The `createComposable` function is a utility function that returns an object with several methods used to create and manage a context for plugins. The following methods are available:
-
-- `createContext(instance)`: creates a new context for a given instance. The instance parameter can be any object that will act as the context. This method returns an object with a use method which is used to apply plugins to the context.
-- `getCurrentInstance()`: retrieves the current instance in use. It can only be used inside the install() method.
-- `provide(key, value)`: provides a value to a key in the current context. It can only be used inside the install() method.
-- `inject(key)`: retrieves the value associated with a key in the current context. It can only be used inside the install() method.
 
 ## Installation
 
@@ -24,7 +17,18 @@ Install with [npm](https://www.npmjs.com/):
 $ npm install composable-hook
 ```
 
-## Usage
+## Composable
+The `createComposable` function is a utility function that returns an object with several methods used to create and manage a context for plugins. The following methods are available:
+
+- `createContext(instance)`: creates a new context for a given instance. The instance parameter can be any object that will act as the context. This method returns an object with a use method which is used to apply plugins to the context.
+  - `context.hook(install?, ...)`
+  - `context.use(plugin, ...)`
+- `getCurrentInstance()`: retrieves the current instance in use. It can only be used inside the install() method.
+- `provide(key, value)`: provides a value to a key in the current context. It can only be used inside the install() method.
+- `inject(key)`: retrieves the value associated with a key in the current context. It can only be used inside the install() method.
+
+
+### Usage
 
 The code above shows an example of how to use the composable-hook library to create a modular and composable application.
 
@@ -132,6 +136,15 @@ const core = createCore(...)
               .use(createConfigPlugin(...), ...)
               .use(createLoggerPlugin(...), ...) 
 ```
+
+## Hook
+`createHookContext` returns an object with several functions that can be used to create and manipulate hooks. Here is an overview of the available functions:
+
+- `wrap(instance)`: Creates a hook that wraps an instance object and allows for the installation of additional functionality through the install function.
+- `getCurrentInstance()`: Returns the current instance object that is being modified by the hook. This function can only be used inside the install function.
+- `provide(key, value)`: Registers a value with a key in the current hook's "provides" object. This object can be used to share values between different hooks.
+- `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
+
 
 ## Reference Docs
 - [composable](https://vuejs.org/guide/reusability/composables.html#what-is-a-composable)

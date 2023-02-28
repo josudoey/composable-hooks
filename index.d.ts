@@ -1,13 +1,15 @@
 export {
   type InstallFunction,
-  type SetInstanceFunction,
+  type HookFunction,
 
+  type WrapFunction,
+  type GetCurrentInstanceFunction,
+  type ProvideFunction,
+  type InjectFunction,
   type HookContext,
-  type CreateHookContextFunction,
-  type Hook,
 
-  createHook
-} from './lib/createHook'
+  createHookContext
+} from './lib/createHookContext'
 
 export {
   type Installable,
