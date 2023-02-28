@@ -147,6 +147,7 @@ const core = createCore(...)
 
 
 ## Reference Docs
+- [hooks](https://reactjs.org/docs/hooks-intro.html)
 - [composable](https://vuejs.org/guide/reusability/composables.html#what-is-a-composable)
 - [context](https://github.com/vuejs/core/blob/a0e7dc334356e9e6ffaa547d29e55b34b9b8a04d/packages/runtime-core/src/apiCreateApp.ts#L204)
 - [injection](https://github.com/vuejs/core/blob/a0e7dc334356e9e6ffaa547d29e55b34b9b8a04d/packages/runtime-core/src/apiInject.ts#L6)
