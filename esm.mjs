@@ -1,2 +1,2 @@
-export { default as createHook } from './lib/createHook.js'
+export { default as createHooksContext } from './lib/createHooksContext.js'
 export { default as createComposable } from './lib/createComposable.js'

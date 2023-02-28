@@ -6,21 +6,21 @@ import {
   type GetCurrentInstanceFunction,
   type ProvideFunction,
   type InjectFunction,
-  type HookContext,
+  type HooksContext,
 
-  createHookContext
+  createHooksContext
 } from '..'
 
-describe('createHookContext', () => {
+describe('createHooksContext', () => {
   let fixtureInstance: any
-  let context: HookContext<any, any[]>
+  let context: HooksContext<any, any[]>
   let getCurrentInstance: GetCurrentInstanceFunction<any>
   let wrap: WrapFunction<any, any[]>
   let provide: ProvideFunction<any>
   let inject: InjectFunction<any>
 
   beforeEach(() => {
-    context = createHookContext()
+    context = createHooksContext()
     wrap = context.wrap
     getCurrentInstance = context.getCurrentInstance
     provide = context.provide

@@ -6,11 +6,11 @@ export type GetCurrentInstanceFunction<T> = () => T
 export type ProvideFunction<T> = (key: string | unique symbol, value: T) => void
 export type InjectFunction<T> = (key: string | unique symbol) => T
 
-export interface HookContext <T, Options> {
+export interface HooksContext <T, Options> {
   wrap: WrapFunction<T, Options>
   getCurrentInstance: () => T
   provide: ProvideFunction<any>
   inject: InjectFunction<any>
 }
 
-export declare function createHookContext <T=any, Options=any[]> (): HookContext<T, Options>
+export declare function createHooksContext <T=any, Options=any[]> (): HooksContext<T, Options>

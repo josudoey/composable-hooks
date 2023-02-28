@@ -6,10 +6,10 @@ export {
   type GetCurrentInstanceFunction,
   type ProvideFunction,
   type InjectFunction,
-  type HookContext,
+  type HooksContext,
 
-  createHookContext
-} from './lib/createHookContext'
+  createHooksContext
+} from './lib/createHooksContext'
 
 export {
   type Installable,

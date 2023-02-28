@@ -4,7 +4,7 @@ import {
   type GetCurrentInstanceFunction,
   type ProvideFunction,
   type InjectFunction
-} from './createHookContext'
+} from './createHooksContext'
 
 export interface Installable<T, Options=any[]> {
   install: Install<T, Options>

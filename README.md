@@ -138,7 +138,7 @@ const core = createCore(...)
 ```
 
 ## Hook
-`createHookContext` returns an object with several functions that can be used to create and manipulate hooks. Here is an overview of the available functions:
+`createHooksContext` returns an object with several functions that can be used to create and manipulate hooks. Here is an overview of the available functions:
 
 - `wrap(instance)`: Creates a hook that wraps an instance object and allows for the installation of additional functionality through the install function.
 - `getCurrentInstance()`: Returns the current instance object that is being modified by the hook. This function can only be used inside the install function.
