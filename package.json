@@ -1,7 +1,7 @@
 {
-  "name": "composable-hook",
-  "version": "0.0.18",
-  "description": "provide composable function",
+  "name": "composable-hooks",
+  "version": "0.0.19",
+  "description": "provide composable&hooks function",
   "main": "index.js",
   "module": "esm.mjs",
   "scripts": {
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/josudoey/composable-hook.git"
   },
   "keywords": [
-    "hook",
+    "hooks",
     "composable",
     "usable",
     "plugin"

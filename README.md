@@ -1,12 +1,12 @@
-# composable-hook
+# composable-hooks
 [![npm](https://img.shields.io/npm/v/composable-hook)](https://www.npmjs.com/package/composable-hook)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/josudoey/composable-hook/action.yml)](https://github.com/josudoey/composable-hook/actions)
 
-- [composable-hook](#composable-hook)
+- [composable-hooks](#composable-hooks)
   - [Installation](#installation)
-  - [Composable](#composable)
-    - [Usage](#usage)
-  - [Hooks](#hooks)
+  - [Usage](#usage)
+    - [HooksContext](#hookscontext)
+    - [Composable](#composable)
   - [Reference Docs](#reference-docs)
 
 ## Installation
@@ -17,7 +17,50 @@ Install with [npm](https://www.npmjs.com/):
 $ npm install composable-hook
 ```
 
-## Composable
+## Usage
+
+### HooksContext
+`createHooksContext` returns an object with the following methods:
+- `create(instance)`: method is used to create a new hook. It takes an instance argument, which is the object that the hook is attached to. It returns a function that takes a hook argument, which is the function that defines the hook.
+  - `wrap(hook)`: method returns the a hooks function.
+- `getCurrentInstance()`: method returns the current instance that the hook is attached to. It can only be called from within a hooks.
+- `provide(key, value)`: Registers a value with a key in the current hook's "provides" object. This object can be used to share values between different hooks.
+- `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
+
+```mjs
+import { create, provide, inject, getCurrentInstance } from 'composable-hook'
+
+const app = { name: 'example' }
+const wrap = create(app)
+
+const useApp = wrap(function () {
+  return getCurrentInstance()
+})
+
+console.log(useApp())
+// Output
+// { name: 'example' }
+
+const LoggerSymbol = Symbol('logger')
+const setup = wrap(function () {
+  provide(LoggerSymbol, {
+    info: console.log
+  })
+})
+
+const useLogger = wrap(function () {
+  return inject(LoggerSymbol)
+})
+
+setup()
+const logger = useLogger()
+logger.info('hello')
+// Output
+// hello
+```
+
+
+### Composable
 The `createComposable` function is a utility function that returns an object with several methods used to create and manage a context for plugins. The following methods are available:
 
 - `createContext(instance)`: creates a new context for a given instance. The instance parameter can be any object that will act as the context. This method returns an object with a use method which is used to apply plugins to the context.
@@ -28,13 +71,11 @@ The `createComposable` function is a utility function that returns an object wit
 - `inject(key)`: retrieves the value associated with a key in the current context. It can only be used inside the hook() method.
 
 
-### Usage
-
 The code above shows an example of how to use the composable-hook library to create a modular and composable application.
 
 ```mjs
 // core.js
-import { createComposable } from 'composable-hook'
+import { createComposable } from 'composable-hooks'
 
 // like koa or express or vue
 import { createApp } from './createApp.js' 
@@ -137,18 +178,11 @@ const core = createCore(...)
               .use(createLoggerPlugin(...), ...) 
 ```
 
-## Hooks
-`createHooksContext` returns an object with the following methods:
-- `create(instance)`: method is used to create a new hook. It takes an instance argument, which is the object that the hook is attached to. It returns a function that takes a hook argument, which is the function that defines the hook.
-  - `wrap(hook)`: method returns the a hooks function.
-- `getCurrentInstance()`: method returns the current instance that the hook is attached to. It can only be called from within a hooks.
-- `provide(key, value)`: Registers a value with a key in the current hook's "provides" object. This object can be used to share values between different hooks.
-- `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
 
 
 ## Reference Docs
-- [composable](https://vuejs.org/guide/reusability/composables.html#what-is-a-composable)
 - [hooks](https://reactjs.org/docs/hooks-intro.html)
+- [react fiber](https://github.com/facebook/react/blob/6ff1733e63fdb948ae973a713741b4526102c73c/packages/react-reconciler/src/ReactFiberWorkLoop.js#L1910-L1927)
+- [composable](https://vuejs.org/guide/reusability/composables.html#what-is-a-composable)
 - [context](https://github.com/vuejs/core/blob/a0e7dc334356e9e6ffaa547d29e55b34b9b8a04d/packages/runtime-core/src/apiCreateApp.ts#L204)
 - [injection](https://github.com/vuejs/core/blob/a0e7dc334356e9e6ffaa547d29e55b34b9b8a04d/packages/runtime-core/src/apiInject.ts#L6)
-- [react fiber](https://github.com/facebook/react/blob/6ff1733e63fdb948ae973a713741b4526102c73c/packages/react-reconciler/src/ReactFiberWorkLoop.js#L1910-L1927)
