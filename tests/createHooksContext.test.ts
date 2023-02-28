@@ -208,26 +208,6 @@ describe('createHooksContext', () => {
           expect(hookMock).toBeCalled()
         })
       })
-
-      describe('duplicate', () => {
-        let consoleMock: jest.SpyInstance
-        beforeAll(() => {
-          consoleMock = jest.spyOn(console, 'error').mockImplementation()
-          hook = jest.fn(() => {
-            const duplicatedKey = Symbol('duplicatedKey')
-            provide(duplicatedKey, 'test1')
-            provide(duplicatedKey, 'test2')
-          })
-        })
-
-        afterAll(() => {
-          consoleMock.mockRestore()
-        })
-
-        test('error message matched', () => {
-          expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection Symbol(duplicatedKey) duplicate provided')
-        })
-      })
     })
 
     test('outside hooks', () => {

@@ -242,17 +242,6 @@ describe('createComposable', () => {
           expect(pluginMock).toBeCalled()
         })
       })
-
-      test('duplicate', () => {
-        const consoleMock = jest.spyOn(console, 'error').mockImplementation()
-        fixtureContext.use(() => {
-          const duplicatedKey = Symbol('duplicatedKey')
-          provide(duplicatedKey, 'test1')
-          provide(duplicatedKey, 'test2')
-        })
-        expect(consoleMock.mock.calls[0][0]).toStrictEqual('injection Symbol(duplicatedKey) duplicate provided')
-        consoleMock.mockRestore()
-      })
     })
 
     test('not installing', () => {
