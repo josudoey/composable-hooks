@@ -1,50 +1,16 @@
 import {
+  type WrapFunction,
   type HookFunction,
   type HooksFunction,
-  type WrapFunction,
 
-  type CreateFunction,
-  type GetCurrentInstanceFunction,
-  type ProvideFunction,
-  type InjectFunction,
-
-  type HooksContext,
-  createHooksContext
+  create,
+  getCurrentInstance,
+  provide,
+  inject
 } from '..'
 
-describe('createHooksContext', () => {
+describe('defaultHooksContext', () => {
   let fixtureInstance: any
-  let context: HooksContext<any>
-  let create: CreateFunction<any>
-  let getCurrentInstance: GetCurrentInstanceFunction<any>
-  let provide: ProvideFunction<any>
-  let inject: InjectFunction<any>
-
-  beforeEach(() => {
-    context = createHooksContext()
-    create = context.create
-    getCurrentInstance = context.getCurrentInstance
-    provide = context.provide
-    inject = context.inject
-  })
-
-  describe('createContext', () => {
-    let wrap: WrapFunction
-
-    beforeEach(() => {
-      wrap = create(fixtureInstance)
-    })
-
-    describe('get instance', () => {
-      beforeAll(() => {
-        fixtureInstance = Symbol('instance')
-      })
-
-      test('instance matched', () => {
-        expect(wrap(() => getCurrentInstance())()).toStrictEqual(fixtureInstance)
-      })
-    })
-  })
 
   describe('wrap', () => {
     let wrap: WrapFunction
@@ -260,8 +226,8 @@ describe('createHooksContext', () => {
         test('injection matched', () => {
           expect(() =>
             wrap(() => {
-              expect(context.inject(fixtureKey1)).toStrictEqual(fixtureValue1)
-              expect(context.inject(fixtureKey2)).toStrictEqual(fixtureValue2)
+              expect(inject(fixtureKey1)).toStrictEqual(fixtureValue1)
+              expect(inject(fixtureKey2)).toStrictEqual(fixtureValue2)
             })()).not.toThrowError()
         })
       })

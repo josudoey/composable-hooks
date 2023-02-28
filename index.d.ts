@@ -16,12 +16,18 @@ export {
   type InstallFunction,
   type Installable,
   type Plugin,
-
   type UseFunction,
-  type ComposableContext,
 
+  type ComposableContext,
   type CreateComposableContextFunction,
   type Composable,
 
   createComposable
 } from './lib/createComposable'
+
+export {
+  create,
+  getCurrentInstance,
+  provide,
+  inject
+} from './lib/default'

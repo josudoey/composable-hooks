@@ -7,8 +7,8 @@ export type GetCurrentInstanceFunction<T> = () => T
 export type ProvideFunction<T> = (key: string | unique symbol, value: T) => void
 export type InjectFunction<T> = (key: string | unique symbol) => T
 
-export interface HooksContext <T, Options> {
-  create: CreateFunction<T, Options>
+export interface HooksContext <T> {
+  create: CreateFunction<T>
   getCurrentInstance: () => T
   provide: ProvideFunction<any>
   inject: InjectFunction<any>
