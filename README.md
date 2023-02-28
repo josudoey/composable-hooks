@@ -23,9 +23,9 @@ The `createComposable` function is a utility function that returns an object wit
 - `createContext(instance)`: creates a new context for a given instance. The instance parameter can be any object that will act as the context. This method returns an object with a use method which is used to apply plugins to the context.
   - `context.hook(install?, ...)`
   - `context.use(plugin, ...)`
-- `getCurrentInstance()`: retrieves the current instance in use. It can only be used inside the install() method.
-- `provide(key, value)`: provides a value to a key in the current context. It can only be used inside the install() method.
-- `inject(key)`: retrieves the value associated with a key in the current context. It can only be used inside the install() method.
+- `getCurrentInstance()`: retrieves the current instance in use. It can only be used inside the hook() method.
+- `provide(key, value)`: provides a value to a key in the current context. It can only be used inside the hook() method.
+- `inject(key)`: retrieves the value associated with a key in the current context. It can only be used inside the hook() method.
 
 
 ### Usage

@@ -177,7 +177,7 @@ describe('createHooksContext', () => {
       test('currenct instance is undefined', () => {
         const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         expect(getCurrentInstance()).toBeUndefined()
-        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
+        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside hook().')
         consoleMock.mockRestore()
       })
     })
@@ -186,7 +186,7 @@ describe('createHooksContext', () => {
       test('errror matched', () => {
         const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         installMock()
-        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
+        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside hook().')
         consoleMock.mockRestore()
       })
     })
@@ -233,7 +233,7 @@ describe('createHooksContext', () => {
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       provide(Symbol('key'), 'value')
-      expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside install().')
+      expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside hook().')
       consoleMock.mockRestore()
     })
   })
@@ -290,7 +290,7 @@ describe('createHooksContext', () => {
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       inject(Symbol('error'))
-      expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside install().')
+      expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside hook().')
       consoleMock.mockRestore()
     })
   })

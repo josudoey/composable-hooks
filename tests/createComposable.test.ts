@@ -192,7 +192,7 @@ describe('createComposable', () => {
       test('currenct instance is undefined', () => {
         const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         expect(composable.getCurrentInstance()).toBeUndefined()
-        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
+        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside hook().')
         consoleMock.mockRestore()
       })
     })
@@ -201,7 +201,7 @@ describe('createComposable', () => {
       test('errror matched', () => {
         const consoleMock = jest.spyOn(console, 'error').mockImplementation()
         pluginMock()
-        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside install().')
+        expect(consoleMock.mock.calls[0][0]).toStrictEqual('getCurrentInstance() can only be used inside hook().')
         consoleMock.mockRestore()
       })
     })
@@ -248,7 +248,7 @@ describe('createComposable', () => {
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       composable.provide(Symbol('key'), 'value')
-      expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside install().')
+      expect(consoleMock.mock.calls[0][0]).toStrictEqual('provide() can only be used inside hook().')
       consoleMock.mockRestore()
     })
   })
@@ -305,7 +305,7 @@ describe('createComposable', () => {
     test('not installing', () => {
       const consoleMock = jest.spyOn(console, 'error').mockImplementation()
       composable.inject(Symbol('error'))
-      expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside install().')
+      expect(consoleMock.mock.calls[0][0]).toStrictEqual('inject() can only be used inside hook().')
       consoleMock.mockRestore()
     })
   })
