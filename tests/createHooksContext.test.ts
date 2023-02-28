@@ -28,7 +28,7 @@ describe('createHooksContext', () => {
     inject = context.inject
   })
 
-  describe('createContext', () => {
+  describe('create', () => {
     let wrap: WrapFunction
 
     beforeEach(() => {

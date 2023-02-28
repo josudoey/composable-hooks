@@ -12,7 +12,7 @@ import {
 describe('defaultHooksContext', () => {
   let fixtureInstance: any
 
-  describe('wrap', () => {
+  describe('create', () => {
     let wrap: WrapFunction
 
     beforeEach(() => {

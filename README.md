@@ -1,8 +1,8 @@
-# composable-hooks
-[![npm](https://img.shields.io/npm/v/composable-hook)](https://www.npmjs.com/package/composable-hook)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/josudoey/composable-hook/action.yml)](https://github.com/josudoey/composable-hook/actions)
+# composable-hookss
+[![npm](https://img.shields.io/npm/v/composable-hooks)](https://www.npmjs.com/package/composable-hooks)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/josudoey/composable-hooks/action.yml)](https://github.com/josudoey/composable-hooks/actions)
 
-- [composable-hooks](#composable-hooks)
+- [composable-hookss](#composable-hookss)
   - [Installation](#installation)
   - [Usage](#usage)
     - [HooksContext](#hookscontext)
@@ -14,7 +14,7 @@
 Install with [npm](https://www.npmjs.com/):
 
 ```sh
-$ npm install composable-hook
+$ npm install composable-hooks
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ $ npm install composable-hook
 - `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
 
 ```mjs
-import { create, provide, inject, getCurrentInstance } from 'composable-hook'
+import { create, provide, inject, getCurrentInstance } from 'composable-hooks'
 
 const app = { name: 'example' }
 const wrap = create(app)
@@ -71,16 +71,16 @@ The `createComposable` function is a utility function that returns an object wit
 - `inject(key)`: retrieves the value associated with a key in the current context. It can only be used inside the hook() method.
 
 
-The code above shows an example of how to use the composable-hook library to create a modular and composable application.
+The code above shows an example of how to use the composable-hooks library to create a modular and composable application.
 
 ```mjs
 // core.js
-import { createComposable } from 'composable-hooks'
+import { createComposable } from 'composable-hookss'
 
 // like koa or express or vue
 import { createApp } from './createApp.js' 
 
-// The core.js file imports the createComposable function from the composable-hook library,
+// The core.js file imports the createComposable function from the composable-hooks library,
 // which returns a set of functions to create and manage a composable application.
 // It also imports a createApp function from a createApp.js module.
 
