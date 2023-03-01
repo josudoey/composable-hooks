@@ -34,7 +34,7 @@ $ npm install composable-hooks
 #### use default wrap
 
 ```mjs
-import { wrap } from 'composable-hooks'
+import { wrap, getCurrentInstance, provide, inject } from 'composable-hooks'
 
 const getDefaultInstanceHooks = wrap(function () {
   return getCurrentInstance()
@@ -43,6 +43,32 @@ const getDefaultInstanceHooks = wrap(function () {
 console.log(getDefaultInstanceHooks())
 // Output
 // null
+
+const LoggerSymbol = Symbol('logger')
+const setup1 = function () {
+  provide(LoggerSymbol, {
+    info: console.log
+  })
+}
+
+const useLogger = function () {
+  return inject(LoggerSymbol)
+}
+
+const setup2 = function () {
+  const logger = useLogger()
+  logger.info('hello')
+}
+
+wrap(function () {
+  setup1()
+  setup2()
+})()
+// Output
+// hello
+
+// other handle ...
+
 ```
 
 #### use default hooksContext
@@ -52,30 +78,18 @@ import { create, provide, inject, getCurrentInstance } from 'composable-hooks'
 const app = { name: 'example' }
 const wrap = create(app)
 
-const useApp = wrap(function () {
+const useApp = function () {
   return getCurrentInstance()
-})
+}
 
-console.log(useApp())
+wrap(function () {
+  console.log(useApp())
+})()
 // Output
 // { name: 'example' }
 
-const LoggerSymbol = Symbol('logger')
-const setup = wrap(function () {
-  provide(LoggerSymbol, {
-    info: console.log
-  })
-})
+// other handle ...
 
-const useLogger = wrap(function () {
-  return inject(LoggerSymbol)
-})
-
-setup()
-const logger = useLogger()
-logger.info('hello')
-// Output
-// hello
 ```
 
 
@@ -84,6 +98,8 @@ logger.info('hello')
 ```mjs
 import { createHooksContext } from 'composable-hooks'
 const { create, provide, inject, getCurrentInstance } = createHooksContext()
+// thie is provide&inject&getCurrentInstance different from default hooksContext
+
 // other handle ...
 
 ```
