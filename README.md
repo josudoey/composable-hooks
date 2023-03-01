@@ -1,8 +1,8 @@
-# composable-hookss
+# composable-
 [![npm](https://img.shields.io/npm/v/composable-hooks)](https://www.npmjs.com/package/composable-hooks)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/josudoey/composable-hooks/action.yml)](https://github.com/josudoey/composable-hooks/actions)
 
-- [composable-hookss](#composable-hookss)
+- [composable-](#composable-)
   - [Installation](#installation)
   - [Usage](#usage)
     - [HooksContext](#hookscontext)
@@ -121,7 +121,7 @@ The code above shows an example of how to use the composable-hooks library to cr
 
 ```mjs
 // core.js
-import { createComposable } from 'composable-hookss'
+import { createComposable } from 'composable-'
 
 // like koa or express or vue
 import { createApp } from './createApp.js' 
