@@ -3,4 +3,4 @@
 
 :warning: __composable-hook is deprecated.__
 
-> instead of [composable-hooks](https://img.shields.io/npm/v/composable-hooks)
+> instead of [composable-hooks](https://www.npmjs.com/package/composable-hook)
