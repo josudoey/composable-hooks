@@ -1,8 +1,8 @@
-# composable-
+# composable-hooks
 [![npm](https://img.shields.io/npm/v/composable-hooks)](https://www.npmjs.com/package/composable-hooks)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/josudoey/composable-hooks/action.yml)](https://github.com/josudoey/composable-hooks/actions)
 
-- [composable-](#composable-)
+- [composable-hooks](#composable-hooks)
   - [Installation](#installation)
   - [Usage](#usage)
     - [HooksContext](#hookscontext)
