@@ -3,4 +3,4 @@
 
 :warning: __composable-hook is deprecated.__
 
-> instead of [composable-hooks](https://www.npmjs.com/package/composable-hook)
+> instead of [composable-hooks](https://www.npmjs.com/package/composable-hooks)
