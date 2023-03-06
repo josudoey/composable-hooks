@@ -151,8 +151,8 @@ export function createCore (options) {
   }
 }
 
-// The useCore function returns the current instance of the application.
-export function useCore () {
+// The useApp function returns the current instance of the application.
+export function useApp () {
   return getCurrentInstance()
 }
 export { provide, inject }
