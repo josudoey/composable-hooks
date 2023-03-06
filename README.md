@@ -121,7 +121,7 @@ The code above shows an example of how to use the composable-hooks library to cr
 
 ```mjs
 // core.js
-import { createComposable } from 'composable-'
+import { createComposable } from 'composable-hooks'
 
 // like koa or express or vue
 import { createApp } from './createApp.js' 
