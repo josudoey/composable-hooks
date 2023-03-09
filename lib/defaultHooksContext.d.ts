@@ -1,8 +1,17 @@
 import {
   type WrapFunction,
   type HookFunction,
-  type HooksFunction
+  type HooksFunction,
+  type ProvideFunction,
+  type InjectFunction
 } from './createHooksContext'
+
+export interface ComposeContext {
+  provide: ProvideFunction
+  inject: InjectFunction
+}
+
+export declare function compose<T> (hook: HookFunction<T, Options>): T
 export declare function wrap (hook: HookFunction<T, Options>): HooksFunction<T, Options>
 export declare function create <T> (instance: T): WrapFunction
 export declare function getCurrentInstance<T> (): T

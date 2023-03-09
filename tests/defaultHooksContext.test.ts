@@ -2,7 +2,9 @@ import {
   type WrapFunction,
   type HookFunction,
   type HooksFunction,
+  type ComposeContext,
 
+  compose,
   wrap,
   create,
   getCurrentInstance,
@@ -12,6 +14,31 @@ import {
 
 describe('defaultHooksContext', () => {
   let fixtureInstance: any
+
+  describe('compose', () => {
+    let hook: HookFunction<object>
+    let result: object
+
+    beforeEach(() => {
+      result = compose(hook)
+    })
+
+    describe('hooks', () => {
+      let currentInstance: ComposeContext
+      beforeAll(() => {
+        hook = function (ctx: ComposeContext) {
+          currentInstance = getCurrentInstance()
+          return ctx
+        }
+      })
+
+      test('currentInstance matched', () => {
+        expect(result).toStrictEqual(currentInstance)
+        expect(currentInstance.provide).toStrictEqual(provide)
+        expect(currentInstance.inject).toStrictEqual(inject)
+      })
+    })
+  })
 
   describe('wrap', () => {
     test('instance matched', () => {

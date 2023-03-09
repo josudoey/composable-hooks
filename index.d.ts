@@ -26,6 +26,9 @@ export {
 } from './lib/createComposable'
 
 export {
+  type ComposeContext,
+
+  compose,
   wrap,
   create,
   getCurrentInstance,
