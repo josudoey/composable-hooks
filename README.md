@@ -6,6 +6,7 @@
   - [Installation](#installation)
   - [Usage](#usage)
     - [HooksContext](#hookscontext)
+      - [use compose](#use-compose)
       - [use default wrap](#use-default-wrap)
       - [use default hooksContext](#use-default-hookscontext)
       - [use createHooksContext](#use-createhookscontext)
@@ -30,6 +31,44 @@ $ npm install composable-hooks
 - `getCurrentInstance()`: method returns the current instance that the hook is attached to. It can only be called from within a hooks.
 - `provide(key, value)`: Registers a value with a key in the current hook's "provides" object. This object can be used to share values between different hooks.
 - `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
+
+#### use compose
+
+```mjs
+import { compose, provide, inject } from './esm.mjs'
+
+const useState = function () {
+  return inject('state')
+}
+
+const example1 = compose(function ({ provide }) {
+  provide('state', { name: 'example1' })
+  return useState()
+})
+console.log(example1)
+// Output
+// { name: 'example1' }
+
+const setup = function (name) {
+  provide('state', { name })
+}
+
+const example2 = compose(function ({ inject }) {
+  setup('example2')
+  return inject('state')
+})
+console.log(example2)
+// Output
+// { name: 'example2' }
+
+const example3 = compose(function () {
+  setup('example3')
+  return useState()
+})
+console.log(example3)
+// Output
+// { name: 'example3' }
+```
 
 #### use default wrap
 
@@ -98,7 +137,7 @@ wrap(function () {
 ```mjs
 import { createHooksContext } from 'composable-hooks'
 const { create, provide, inject, getCurrentInstance } = createHooksContext()
-// thie is provide&inject&getCurrentInstance different from default hooksContext
+// this is provide&inject&getCurrentInstance different from default hooksContext
 
 // other handle ...
 
