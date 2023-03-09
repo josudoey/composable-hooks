@@ -23,7 +23,7 @@ describe('defaultHooksContext', () => {
       result = compose(hook)
     })
 
-    describe('hooks', () => {
+    describe('context', () => {
       let currentInstance: ComposeContext
       beforeAll(() => {
         hook = function (ctx: ComposeContext) {
@@ -32,10 +32,52 @@ describe('defaultHooksContext', () => {
         }
       })
 
-      test('currentInstance matched', () => {
+      test('result matched', () => {
         expect(result).toStrictEqual(currentInstance)
         expect(currentInstance.provide).toStrictEqual(provide)
         expect(currentInstance.inject).toStrictEqual(inject)
+      })
+    })
+
+    describe('context.provide', () => {
+      let fixtureTime: number
+      beforeAll(() => {
+        fixtureTime = Date.now()
+        function useTime (): number {
+          return inject<number>('now')
+        }
+
+        hook = function ({ provide }) {
+          provide('now', fixtureTime)
+          return {
+            now: useTime()
+          }
+        }
+      })
+
+      test('result matched', () => {
+        expect(result).toStrictEqual({ now: fixtureTime })
+      })
+    })
+
+    describe('context.inject', () => {
+      let fixtureTime: number
+      beforeAll(() => {
+        fixtureTime = Date.now()
+        function setup (): void {
+          provide<number>('now', fixtureTime)
+        }
+
+        hook = function ({ inject }) {
+          setup()
+          return {
+            now: inject('now')
+          }
+        }
+      })
+
+      test('result matched', () => {
+        expect(result).toStrictEqual({ now: fixtureTime })
       })
     })
   })
