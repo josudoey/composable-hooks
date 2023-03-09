@@ -35,7 +35,7 @@ $ npm install composable-hooks
 #### use compose
 
 ```mjs
-import { compose, provide, inject } from './esm.mjs'
+import { compose, provide, inject } from 'composable-hooks'
 
 const useState = function () {
   return inject('state')
