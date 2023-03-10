@@ -5,8 +5,9 @@
 - [composable-hooks](#composable-hooks)
   - [Installation](#installation)
   - [Usage](#usage)
-    - [HooksContext](#hookscontext)
+    - [Compose](#compose)
       - [use compose](#use-compose)
+    - [HooksContext](#hookscontext)
       - [use default wrap](#use-default-wrap)
       - [use default hooksContext](#use-default-hookscontext)
       - [use createHooksContext](#use-createhookscontext)
@@ -24,13 +25,9 @@ $ npm install composable-hooks
 
 ## Usage
 
-### HooksContext
-`createHooksContext` returns an object with the following methods:
-- `create(instance)`: method is used to create a new hook. It takes an instance argument, which is the object that the hook is attached to. It returns a function that takes a hook argument, which is the function that defines the hook.
-  - `wrap(hook)`: method returns the a hooks function.
-- `getCurrentInstance()`: method returns the current instance that the hook is attached to. It can only be called from within a hooks.
-- `provide(key, value)`: Registers a value with a key in the current hook's "provides" object. This object can be used to share values between different hooks.
-- `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
+### Compose
+
+`compose(composer)`: is a higher-order function for flexible assemble any instance by use default hooks context.
 
 #### use compose
 
@@ -49,12 +46,12 @@ console.log(example1)
 // Output
 // { name: 'example1' }
 
-const setup = function (name) {
+const setState = function (name) {
   provide('state', { name })
 }
 
 const example2 = compose(function ({ inject }) {
-  setup('example2')
+  setState('example2')
   return inject('state')
 })
 console.log(example2)
@@ -62,13 +59,22 @@ console.log(example2)
 // { name: 'example2' }
 
 const example3 = compose(function () {
-  setup('example3')
+  setState('example3')
   return useState()
 })
 console.log(example3)
 // Output
 // { name: 'example3' }
 ```
+
+### HooksContext
+
+`createHooksContext` returns an object with the following methods:
+- `create(instance)`: method is used to create a new hook. It takes an instance argument, which is the object that the hook is attached to. It returns a function that takes a hook argument, which is the function that defines the hook.
+  - `wrap(hook)`: method returns the a hooks function.
+- `getCurrentInstance()`: method returns the current instance that the hook is attached to. It can only be called from within a hooks.
+- `provide(key, value)`: Registers a value with a key in the current hook's "provides" object. This object can be used to share values between different hooks.
+- `inject(key)`: Returns the value registered with the given key in the current hook's "provides" object. This function can only be used inside the install function.
 
 #### use default wrap
 
