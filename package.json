@@ -9,7 +9,7 @@
       "require": "./index.js",
       "import": "./esm.mjs"
     },
-    "./lib/*.js": "./lib/*.js",
+    "./lib/*.js": "./lib/*.js"
   },
   "scripts": {
     "clean": "rm -r dist",
