@@ -1,9 +1,16 @@
 {
   "name": "composable-hooks",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "provide composable&hooks function",
   "main": "index.js",
   "module": "esm.mjs",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./esm.mjs"
+    },
+    "./lib/*.js": "./lib/*.js",
+  },
   "scripts": {
     "clean": "rm -r dist",
     "ncu": "npx npm-check-updates",
