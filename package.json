@@ -1,6 +1,6 @@
 {
   "name": "composable-hooks",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "provide composable&hooks function",
   "main": "index.js",
   "module": "esm.mjs",
