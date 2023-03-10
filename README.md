@@ -12,6 +12,7 @@
       - [use default hooksContext](#use-default-hookscontext)
       - [use createHooksContext](#use-createhookscontext)
     - [Composable](#composable)
+      - [use default Composable](#use-default-composable)
       - [use createComposable](#use-createcomposable)
   - [Reference Docs](#reference-docs)
 
@@ -161,12 +162,12 @@ The `createComposable` function is a utility function that returns an object wit
 - `inject(key)`: retrieves the value associated with a key in the current context. It can only be used inside the hook() method.
 
 
-#### use createComposable
+#### use default Composable
 The code above shows an example of how to use the composable-hooks library to create a modular and composable application.
 
 ```mjs
 // core.js
-import { createComposable } from 'composable-hooks'
+import { createContext, getCurrentInstance, provide, inject } from 'composable-hooks'
 
 // like koa or express or vue
 import { createApp } from './createApp.js' 
@@ -174,13 +175,6 @@ import { createApp } from './createApp.js'
 // The core.js file imports the createComposable function from the composable-hooks library,
 // which returns a set of functions to create and manage a composable application.
 // It also imports a createApp function from a createApp.js module.
-
-const {
-  getCurrentInstance,
-  provide,
-  inject,
-  createContext
-} = createComposable()
 
 
 // The createCore function creates a new instance of the application
@@ -269,6 +263,15 @@ const core = createCore(...)
               .use(createLoggerPlugin(...), ...) 
 ```
 
+#### use createComposable
+
+```mjs
+import { createComposable } from 'composable-hooks'
+const { getCurrentInstance, provide, inject, createContext } = createComposable()
+// this is provide&inject&getCurrentInstance different from default Composable
+
+// other handle ...
+```
 
 
 ## Reference Docs
