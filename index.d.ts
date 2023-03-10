@@ -26,7 +26,10 @@ export {
 } from './lib/createComposable'
 
 export {
+  type Provider,
+  type Injector,
   type ComposeContext,
+  type ComposerFunction,
 
   compose,
   wrap,

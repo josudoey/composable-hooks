@@ -6,12 +6,17 @@ import {
   type InjectFunction
 } from './createHooksContext'
 
-export interface ComposeContext {
-  provide: ProvideFunction
-  inject: InjectFunction
+export interface Injector<T=any> {
+  inject: InjectFunction<T>
 }
 
-export declare function compose<T> (hook: HookFunction<T, Options>): T
+export interface Provider<T=any> {
+  provide: ProvideFunction<T>
+}
+export type ComposeContext<ProvideType=any, InjectType=any> = Provider<ProvideType> & Injector<InjectType>
+export type ComposerFunction<ReturnType=any, ProvideType=any, InjectType=any> = (ctx: ComposeContext<ProvideType, InjectType>) => ReturnType
+
+export declare function compose<T> (composer: ComposerFunction<T>): T
 export declare function wrap (hook: HookFunction<T, Options>): HooksFunction<T, Options>
 export declare function create <T> (instance: T): WrapFunction
 export declare function getCurrentInstance<T> (): T

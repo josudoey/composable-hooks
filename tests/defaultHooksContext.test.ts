@@ -3,6 +3,7 @@ import {
   type HookFunction,
   type HooksFunction,
   type ComposeContext,
+  type ComposerFunction,
 
   compose,
   wrap,
@@ -16,17 +17,17 @@ describe('defaultHooksContext', () => {
   let fixtureInstance: any
 
   describe('compose', () => {
-    let hook: HookFunction<object>
+    let composer: ComposerFunction<object>
     let result: object
 
     beforeEach(() => {
-      result = compose(hook)
+      result = compose(composer)
     })
 
     describe('context', () => {
       let currentInstance: ComposeContext
       beforeAll(() => {
-        hook = function (ctx: ComposeContext) {
+        composer = function (ctx: ComposeContext) {
           currentInstance = getCurrentInstance()
           return ctx
         }
@@ -47,7 +48,7 @@ describe('defaultHooksContext', () => {
           return inject<number>('now')
         }
 
-        hook = function ({ provide }) {
+        composer = function ({ provide }: ComposeContext<number>) {
           provide('now', fixtureTime)
           return {
             now: useTime()
@@ -68,7 +69,7 @@ describe('defaultHooksContext', () => {
           provide<number>('now', fixtureTime)
         }
 
-        hook = function ({ inject }) {
+        composer = function ({ inject }: ComposeContext<any, number>) {
           setup()
           return {
             now: inject('now')
