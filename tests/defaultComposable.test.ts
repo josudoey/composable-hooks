@@ -1,8 +1,4 @@
 import {
-  type GetCurrentInstanceFunction,
-  type ProvideFunction,
-  type InjectFunction,
-
   type InstallFunction,
   type Installable,
   type Plugin,
@@ -10,27 +6,14 @@ import {
   type UseFunction,
   type ComposableContext,
 
-  type CreateComposableContextFunction,
-  type Composable,
+  createContext,
+  getCurrentInstance,
+  provide,
+  inject
+} from '..'
 
-  createComposable
-} from '../'
-
-describe('createComposable', () => {
+describe('defaultComposable', () => {
   let fixtureInstance: any
-  let composable: Composable<symbol, any[]>
-  let createContext: CreateComposableContextFunction<any, any[]>
-  let getCurrentInstance: GetCurrentInstanceFunction<any>
-  let provide: ProvideFunction<any>
-  let inject: InjectFunction<any>
-
-  beforeEach(() => {
-    composable = createComposable()
-    createContext = composable.createContext
-    getCurrentInstance = composable.getCurrentInstance
-    provide = composable.provide
-    inject = composable.inject
-  })
 
   describe('createContext', () => {
     let context: ComposableContext<symbol>
@@ -88,7 +71,7 @@ describe('createComposable', () => {
         beforeAll(() => {
           fixtureOtherSymbol = Symbol('other')
           plugin = jest.fn(() => {
-            otherContext = createContext({})
+            otherContext = createContext({ symbol: Symbol('default') })
             otherContext.use((instance) => {
               instance.symbol = fixtureOtherSymbol
             })

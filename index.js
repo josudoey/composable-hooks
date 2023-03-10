@@ -8,11 +8,16 @@ const {
   inject,
   getCurrentInstance
 } = require('./lib/defaultHooksContext.js')
+
+const {
+  createContext
+} = require('./lib/defaultComposable.js')
 Object.assign(module.exports, {
   compose,
   wrap,
   create,
   provide,
   inject,
-  getCurrentInstance
+  getCurrentInstance,
+  createContext
 })

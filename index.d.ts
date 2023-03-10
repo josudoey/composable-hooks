@@ -38,3 +38,7 @@ export {
   provide,
   inject
 } from './lib/defaultHooksContext'
+
+export {
+  createContext
+} from './lib/defaultComposable'
